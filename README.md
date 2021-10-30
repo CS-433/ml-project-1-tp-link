@@ -1,10 +1,7 @@
 # Machine Learning Fall 2021 Project 1 (Team: TP-Link)
 This is our code for the Project 1 of Machine Learning Fall 2021
-Team Name: TP-Link
-Team Member:
-- Silin Gao, silin.gao@epfl.ch
-- Shaobo Cui, shaobo.cui@epfl.ch
-- Dongge Wang, dongge.wang@epfl.ch
+- Team Name: TP-Link
+- Team Member: Silin Gao (silin.gao@epfl.ch), Shaobo Cui (shaobo.cui@epfl.ch), Dongge Wang (dongge.wang@epfl.ch)
 
 ## Requirements
 - Python
@@ -12,18 +9,12 @@ Team Member:
 - Matplotlib
 
 ## Scripts
-- implementations.py
-    implementations of baseline models and our improved model,
-- processor.py
-    data processor, including data imputation, normalization, outlier filtering, feature augmentation and selection,
-- run_baselines.py
-    script for training and evaluating baseline models, including cross validation and test set prediction,
-- run.py
-    script for training and evaluating our improved model, including cross validation and test set prediction,
-- toolkits.py
-    toolkits including data loader, batch generator, metrics computer, file writer, etc.
-- plot_weights.py
-    script for plotting output weights of features in reg_logistic_regression (outlier factor = 10, polynomial factor = 4), used for feature selection
+- implementations.py: implementations of baseline models and our improved model,
+- processor.py: data processor, including data imputation, normalization, outlier filtering, feature augmentation and selection,
+- run_baselines.py: script for training and evaluating baseline models, including cross validation and test set prediction,
+- run.py: script for training and evaluating our improved model, including cross validation and test set prediction,
+- toolkits.py: toolkits including data loader, batch generator, metrics computer, file writer, etc.
+- plot_weights.py: script for plotting output weights of features in reg_logistic_regression (outlier factor = 10, polynomial factor = 4), used for feature selection
 
 ## Running Experiments
 ### Data Processing
