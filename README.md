@@ -1,7 +1,10 @@
 # Machine Learning Fall 2021 Project 1 (Team: TP-Link)
 This is our code for the Project 1 of Machine Learning Fall 2021
 - Team Name: TP-Link
-- Team Member: Silin Gao (silin.gao@epfl.ch), Shaobo Cui (shaobo.cui@epfl.ch), Dongge Wang (dongge.wang@epfl.ch)
+- Team Member:
+1.Silin Gao (silin.gao@epfl.ch)
+2.Shaobo Cui (shaobo.cui@epfl.ch)
+3.Dongge Wang (dongge.wang@epfl.ch)
 
 ## Requirements
 - Python
