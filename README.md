@@ -56,6 +56,3 @@ python run.py
 Outputs:
 - results_reg_logistic_dynamic_k_${cross_validation_folds}_poly_${polynomial_factor}.csv: cross validation results
 - results_reg_logistic_dynamic_poly_${polynomial_factor}.csv: final prediction results on test set (best submission)
-
-## Results
-We include the test set prediction results of all baseline models and our improved model under folder "predictions".
