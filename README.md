@@ -21,6 +21,7 @@ This is our code for the Project 1 of Machine Learning Fall 2021
 
 ## Running Experiments
 ### Data Processing
+Place the original training and test sets (***train.csv*** and ***test.csv***) in the root directory of our project.
 ```
 python processor.py
 ```
@@ -50,3 +51,6 @@ python run.py
 Outputs:
 - ***results\_reg\_logistic\_dynamic\_k\_${cross_validation_folds}\_poly\_${polynomial_factor}.csv***: cross validation results.
 - ***results\_reg\_logistic\_dynamic\_poly\_${polynomial_factor}.csv***: final prediction results on test set (best submission).
+
+## Results
+We include the test set prediction results of all baseline models and our improved model under the folder "predictions".
