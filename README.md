@@ -40,13 +40,13 @@ python run_baselines.py
 ```
 Note: Baseline running directly loads and pre-processes the original data (train.csv and test.csv), which is independent from the data processing.
 Outputs:
-- results_${model_name}_k_${cross_validation_folds}.csv: cross validation results.
-- results_${model_name}.csv: final prediction results on test set.
+- ***results\_${model_name}\_k\_${cross_validation_folds}.csv***: cross validation results.
+- ***results\_${model_name}.csv***: final prediction results on test set.
 
 ### Improved Model Training and Evaluation
 ```
 python run.py
 ```
 Outputs:
-- results_reg_logistic_dynamic_k_${cross_validation_folds}_poly_${polynomial_factor}.csv: cross validation results.
-- results_reg_logistic_dynamic_poly_${polynomial_factor}.csv: final prediction results on test set (best submission).
+- ***results\_reg\_logistic\_dynamic\_k\_${cross_validation_folds}\_poly\_${polynomial_factor}.csv***: cross validation results.
+- ***results\_reg\_logistic\_dynamic\_poly\_${polynomial_factor}.csv***: final prediction results on test set (best submission).
