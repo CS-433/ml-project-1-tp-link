@@ -109,7 +109,7 @@ def train_valid(y, tx, lambdas=None, gammas=None, epoch_iters=None, init_w=None,
             weights, results = cross_validation(y, tx, lambda_=lambda_, k_cross=k_cross, model=model)
             with open(file_path, "a") as f:
                 f.write("lambda_" + str(lambda_) + "\n")
-            write_results_valid(ile_path, results, weights, tx.shape[1], k_cross)
+            write_results_valid(file_path, results, weights, tx.shape[1], k_cross)
     elif model == "logistic":
         step_iters = [int(epoch * data_size * train_valid_ratio) for epoch in epoch_iters]
         for gamma in gammas:
