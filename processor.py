@@ -239,14 +239,11 @@ if __name__ == "__main__":
             assert processor.select_poly_tx.shape[0] == processor.y.shape[0]
             assert processor.select_poly_tx.shape[1] == len(processor.select_full_col_names)
             if processor.mode == "test":
-                file_name = "select_feature_top20_test_poly_" + str(processor.poly_factor) + "_tx.csv"
+                # As what described in the report, we don't apply feature selection on our final model as
+                # feature selection even harms model's performance
+                print("We don't apply feature selection on our final model since feature selection harms performance!")
             else:
                 file_name = "select_feature_top20_" + "filter_factor_" + str(processor.outlier_factor) + \
                             "_poly_" + str(processor.poly_factor) + "_tx.csv"
-            # file_name_column = "select_column_name_file_poly_" + str(preprocessor.poly_factor) + \
-            #                    "_filter_" + str(preprocessor.outlier_factor) + ".csv"
-
-            poly_select_header_str = ",".join(processor.select_full_col_names)
-            np.savetxt(file_name, processor.select_poly_tx, delimiter=",", header=poly_select_header_str, comments="")
-            # with open(file_name_column, 'w', newline='') as f:
-            #     f.write(",".join(preprocessor.select_full_col_names))
+                poly_select_header_str = ",".join(processor.select_full_col_names)
+                np.savetxt(file_name, processor.select_poly_tx, delimiter=",", header=poly_select_header_str, comments="")
