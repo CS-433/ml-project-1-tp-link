@@ -74,103 +74,125 @@ def cross_validation(y, tx, lambda_=None, gamma=None, iters=None, init_w=None, k
 def train_valid(y, tx, lambdas=None, gammas=None, epoch_iters=None, init_w=None, k_cross=10, model="reg_logistic"):
     train_valid_ratio = (k_cross - 1) / k_cross
     data_size = len(y)
-    with open("results_" + model + "_k_" + str(k_cross) + ".csv", "w") as f:
-        if model == "least_squares_GD":
-            step_iters = epoch_iters
-            for gamma in gammas:
-                prev_iter = 0
-                weights = [init_w for _ in range(k_cross)]
-                for step in step_iters:
-                    weights, results = cross_validation(y, tx, gamma=gamma, iters=step - prev_iter,
-                                                        init_w=weights, k_cross=k_cross, model=model)
-                    prev_iter = step
+    file_path = "./results_" + model + "_k_" + str(k_cross) + ".csv"
+    if model == "least_squares_GD":
+        step_iters = epoch_iters
+        for gamma in gammas:
+            prev_iter = 0
+            weights = [init_w for _ in range(k_cross)]
+            for step in step_iters:
+                weights, results = cross_validation(y, tx, gamma=gamma, iters=step - prev_iter,
+                                                    init_w=weights, k_cross=k_cross, model=model)
+                prev_iter = step
+                print("Training Step: " + str(step))
+                with open(file_path, "a") as f:
                     f.write("gamma_" + str(gamma) + "_iters_" + str(step) + "\n")
-                    write_results_valid(f, results, weights, tx.shape[1], k_cross)
-        elif model == "least_squares_SGD":
-            step_iters = [int(epoch * data_size * train_valid_ratio) for epoch in epoch_iters]
-            for gamma in gammas:
-                prev_iter = 0
-                weights = [init_w for _ in range(k_cross)]
-                for step in step_iters:
-                    weights, results = cross_validation(y, tx, gamma=gamma, iters=step - prev_iter,
-                                                        init_w=weights, k_cross=k_cross, model=model)
-                    prev_iter = step
+                write_results_valid(file_path, results, weights, tx.shape[1], k_cross)
+    elif model == "least_squares_SGD":
+        step_iters = [int(epoch * data_size * train_valid_ratio) for epoch in epoch_iters]
+        for gamma in gammas:
+            prev_iter = 0
+            weights = [init_w for _ in range(k_cross)]
+            for step in step_iters:
+                weights, results = cross_validation(y, tx, gamma=gamma, iters=step - prev_iter,
+                                                    init_w=weights, k_cross=k_cross, model=model)
+                prev_iter = step
+                print("Training Step: " + str(step))
+                with open(file_path, "a") as f:
                     f.write("gamma_" + str(gamma) + "_iters_" + str(step) + "\n")
-                    write_results_valid(f, results, weights, tx.shape[1], k_cross)
-        elif model == "least_squares":
-            weights, results = cross_validation(y, tx, k_cross=k_cross, model=model)
-            write_results_valid(f, results, weights, tx.shape[1], k_cross)
-        elif model == "ridge":
-            for lambda_ in lambdas:
-                weights, results = cross_validation(y, tx, lambda_=lambda_, k_cross=k_cross, model=model)
+                write_results_valid(file_path, results, weights, tx.shape[1], k_cross)
+    elif model == "least_squares":
+        weights, results = cross_validation(y, tx, k_cross=k_cross, model=model)
+        write_results_valid(file_path, results, weights, tx.shape[1], k_cross)
+    elif model == "ridge":
+        for lambda_ in lambdas:
+            weights, results = cross_validation(y, tx, lambda_=lambda_, k_cross=k_cross, model=model)
+            with open(file_path, "a") as f:
                 f.write("lambda_" + str(lambda_) + "\n")
-                write_results_valid(f, results, weights, tx.shape[1], k_cross)
-        elif model == "logistic":
-            step_iters = [int(epoch * data_size * train_valid_ratio) for epoch in epoch_iters]
+            write_results_valid(ile_path, results, weights, tx.shape[1], k_cross)
+    elif model == "logistic":
+        step_iters = [int(epoch * data_size * train_valid_ratio) for epoch in epoch_iters]
+        for gamma in gammas:
+            prev_iter = 0
+            weights = [init_w for _ in range(k_cross)]
+            for step in step_iters:
+                weights, results = cross_validation(y, tx, gamma=gamma, iters=step - prev_iter,
+                                                        init_w=weights, k_cross=k_cross, model=model)
+                prev_iter = step
+                print("Training Step: " + str(step))
+                with open(file_path, "a") as f:
+                    f.write("gamma_" + str(gamma) + "_iters_" + str(step) + "\n")
+                write_results_valid(file_path, results, weights, tx.shape[1], k_cross)
+    elif model == "reg_logistic":
+        step_iters = [int(epoch * data_size * train_valid_ratio) for epoch in epoch_iters]
+        for lambda_ in lambdas:
             for gamma in gammas:
                 prev_iter = 0
                 weights = [init_w for _ in range(k_cross)]
                 for step in step_iters:
-                    weights, results = cross_validation(y, tx, gamma=gamma, iters=step - prev_iter,
+                    weights, results = cross_validation(y, tx, lambda_=lambda_, gamma=gamma, iters=step - prev_iter,
                                                         init_w=weights, k_cross=k_cross, model=model)
                     prev_iter = step
-                    f.write("gamma_" + str(gamma) + "_iters_" + str(step) + "\n")
-                    write_results_valid(f, results, weights, tx.shape[1], k_cross)
-        elif model == "reg_logistic":
-            step_iters = [int(epoch * data_size * train_valid_ratio) for epoch in epoch_iters]
-            for lambda_ in lambdas:
-                for gamma in gammas:
-                    prev_iter = 0
-                    weights = [init_w for _ in range(k_cross)]
-                    for step in step_iters:
-                        weights, results = cross_validation(y, tx, lambda_=lambda_, gamma=gamma, iters=step - prev_iter,
-                                                            init_w=weights, k_cross=k_cross, model=model)
-                        prev_iter = step
+                    print("Training Step: " + str(step))
+                    with open(file_path, "a") as f:
                         f.write("lambda_" + str(lambda_) + "_gamma_" + str(gamma) + "_iters_" + str(step) + "\n")
-                        write_results_valid(f, results, weights, tx.shape[1], k_cross)
+                    write_results_valid(file_path, results, weights, tx.shape[1], k_cross)
 
 
 # train on full training set and write predictions on test set in csv file
 def train_test(y, tx, tx_test, ids_test, lambda_=None, gamma=None, epochs=None, init_w=None, model="ridge"):
     data_size = len(y)
-    with open("results_" + model + ".csv", "w") as f:
-        if model == "least_squares_GD":
-            iters = epochs
-            weight, loss = least_squares_GD(y, tx, initial_w=init_w, max_iters=iters, gamma=gamma)
-            y_predicts_test = predict_binary_test(tx_test, weight, model_type="linear", mode="test")
-            write_results_test(f, ids_test, y_predicts_test)
-        elif model == "least_squares_SGD":
-            iters = int(epochs * data_size)
-            weight, loss = least_squares_SGD(y, tx, initial_w=init_w, max_iters=iters, gamma=gamma)
-            y_predicts_test = predict_binary_test(tx_test, weight, model_type="linear", mode="test")
-            write_results_test(f, ids_test, y_predicts_test)
-        elif model == "least_squares":
-            weight, loss = least_squares(y, tx)
-            y_predicts_test = predict_binary_test(tx_test, weight, model_type="linear", mode="test")
-            write_results_test(f, ids_test, y_predicts_test)
-        elif model == "ridge":
-            weight, loss = ridge_regression(y, tx, lambda_=lambda_)
-            y_predicts_test = predict_binary_test(tx_test, weight, model_type="linear", mode="test")
-            write_results_test(f, ids_test, y_predicts_test)
-        elif model == "logistic":
-            iters = int(epochs * data_size)
-            weight, loss = logistic_regression(y, tx, initial_w=init_w, max_iters=iters, gamma=gamma)
-            y_predicts_test = predict_binary_test(tx_test, weight, model_type="logistic", mode="test")
-            write_results_test(f, ids_test, y_predicts_test)
-        elif model == "reg_logistic":
-            iters = int(epochs * data_size)
-            weight, loss = reg_logistic_regression(y, tx, initial_w=init_w, max_iters=iters, gamma=gamma,
-                                                   lambda_=lambda_)
-            y_predicts_test = predict_binary_test(tx_test, weight, model_type="logistic", mode="test")
-            write_results_test(f, ids_test, y_predicts_test)
-        else:
-            raise ValueError("model must be least_squares_GD, least_squares_SGD, least_squares, ridge, " +
-                             "logistic or reg_logistic")
+    file_path = "./results_" + model + ".csv"
+    if model == "least_squares_GD":
+        iters = epochs
+        print("Training on Full Dataset:")
+        weight, loss = least_squares_GD(y, tx, initial_w=init_w, max_iters=iters, gamma=gamma)
+        print("Predicting on Test Set:")
+        y_predicts_test = predict_binary_test(tx_test, weight, model_type="linear", mode="test")
+        write_results_test(file_path, ids_test, y_predicts_test)
+    elif model == "least_squares_SGD":
+        iters = int(epochs * data_size)
+        print("Training on Full Dataset:")
+        weight, loss = least_squares_SGD(y, tx, initial_w=init_w, max_iters=iters, gamma=gamma)
+        print("Predicting on Test Set:")
+        y_predicts_test = predict_binary_test(tx_test, weight, model_type="linear", mode="test")
+        write_results_test(file_path, ids_test, y_predicts_test)
+    elif model == "least_squares":
+        print("Training on Full Dataset:")
+        weight, loss = least_squares(y, tx)
+        print("Predicting on Test Set:")
+        y_predicts_test = predict_binary_test(tx_test, weight, model_type="linear", mode="test")
+        write_results_test(file_path, ids_test, y_predicts_test)
+    elif model == "ridge":
+        print("Training on Full Dataset:")
+        weight, loss = ridge_regression(y, tx, lambda_=lambda_)
+        print("Predicting on Test Set:")
+        y_predicts_test = predict_binary_test(tx_test, weight, model_type="linear", mode="test")
+        write_results_test(file_path, ids_test, y_predicts_test)
+    elif model == "logistic":
+        iters = int(epochs * data_size)
+        print("Training on Full Dataset:")
+        weight, loss = logistic_regression(y, tx, initial_w=init_w, max_iters=iters, gamma=gamma)
+        print("Predicting on Test Set:")
+        y_predicts_test = predict_binary_test(tx_test, weight, model_type="logistic", mode="test")
+        write_results_test(file_path, ids_test, y_predicts_test)
+    elif model == "reg_logistic":
+        iters = int(epochs * data_size)
+        print("Training on Full Dataset:")
+        weight, loss = reg_logistic_regression(y, tx, initial_w=init_w, max_iters=iters, gamma=gamma,
+                                               lambda_=lambda_)
+        print("Predicting on Test Set:")
+        y_predicts_test = predict_binary_test(tx_test, weight, model_type="logistic", mode="test")
+        write_results_test(file_path, ids_test, y_predicts_test)
+    else:
+        raise ValueError("model must be least_squares_GD, least_squares_SGD, least_squares, ridge, " +
+                         "logistic or reg_logistic")
 
 
 if __name__ == '__main__':
 
     # load original data with only imputation and normalization
+    print("Load Data:")
     _, labels, features = load_data_origin("train.csv", normalize=True)
     ids_test_list, _, features_test = load_data_origin("test.csv", normalize=True)
 

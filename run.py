@@ -54,36 +54,40 @@ def cross_validation(y, tx, lambda_=None, gamma=None, init_w=None, max_epoch_ite
 # train with different hyper-parameters, using cross validation and write results in csv files, return k sets of weights
 def train_valid(y, tx, lambdas=None, gammas=None, max_epoch_iters=None, init_w=None, k_cross=10,
                 model="reg_logistic_dynamic", batches=None, dynamic_lr=False, poly_factor=4, half_lr_count=2,
-                early_stop_count=4):
-    with open("results_" + model + "_k_" + str(k_cross) + "_poly_" + str(poly_factor) + ".csv", "w") as f:
-        if model == "reg_logistic_dynamic":
-            for lambda_ in lambdas:
-                for gamma in gammas:
-                    for batch_size in batches:
-                        weights = [init_w for _ in range(k_cross)]
-                        weights, results = cross_validation(y, tx, gamma=gamma, max_epoch_iters=max_epoch_iters,
-                                                            init_w=weights, batch_size=batch_size,
-                                                            dynamic_lr=dynamic_lr, half_lr_count=half_lr_count,
-                                                            early_stop_count=early_stop_count,
-                                                            k_cross=k_cross, lambda_=lambda_, model=model)
+                early_stop_count=4, return_weights=True):
+    file_path = "./results_" + model + "_k_" + str(k_cross) + "_poly_" + str(poly_factor) + ".csv"
+    weights = None
+    if model == "reg_logistic_dynamic":
+        for lambda_ in lambdas:
+            for gamma in gammas:
+                for batch_size in batches:
+                    weights = [init_w for _ in range(k_cross)]
+                    weights, results = cross_validation(y, tx, gamma=gamma, max_epoch_iters=max_epoch_iters,
+                                                        init_w=weights, batch_size=batch_size,
+                                                        dynamic_lr=dynamic_lr, half_lr_count=half_lr_count,
+                                                        early_stop_count=early_stop_count,
+                                                        k_cross=k_cross, lambda_=lambda_, model=model)
+                    with open(file_path, "a") as f:
                         f.write("lambda_" + str(lambda_) + "_gamma_" + str(gamma) + "_batch_" + str(batch_size) + "\n")
-                        write_results_valid(f, results, weights, tx.shape[1], k_cross)
-    return weights
+                    write_results_valid(file_path, results, weights, tx.shape[1], k_cross)
+    if return_weights:
+        return weights
 
 
 # make predictions on test set using models in cross validation, based on vote scheme, write results in csv file
 def predict_test(tx_test, ids_test, weights, poly_factor=4, k_cross=10, model="reg_logistic_dynamic"):
-    with open("results_" + model + "_poly_" + str(poly_factor) + ".csv", "w") as f:
-        if model == "reg_logistic_dynamic":
-            y_predicts_test = []  # predictions of the k models in cross validation
-            for weight in weights:
-                y_predicts_test.append(predict_binary_test(tx_test, weight, model_type="logistic").copy())
-            # vote for final prediction, follow the majority
-            y_predicts_test_final = \
-                list(map(lambda x: 1 if x > k_cross//2 else -1, np.sum(np.array(y_predicts_test), axis=0)))
-        else:
-            raise ValueError("model must be reg_logistic_dynamic")
-    write_results_test(f, ids_test, y_predicts_test_final)
+    file_path = "./results_" + model + "_poly_" + str(poly_factor) + ".csv"
+    print("Make Predictions on Test Set:")
+    if model == "reg_logistic_dynamic":
+        y_predicts_test = []  # predictions of the k models in cross validation
+        for weight in weights:
+            y_predicts_test.append(predict_binary_test(tx_test, weight, model_type="logistic").copy())
+        # vote for final prediction, follow the majority
+        y_predicts_test_final = \
+            list(map(lambda x: 1 if x > k_cross//2 else -1, np.sum(np.array(y_predicts_test), axis=0)))
+    else:
+        raise ValueError("model must be reg_logistic_dynamic")
+    write_results_test(file_path, ids_test, y_predicts_test_final)
 
 
 if __name__ == '__main__':
@@ -92,6 +96,7 @@ if __name__ == '__main__':
     select_feature = False  # whether conduct feature selection or not
     for poly in poly_factors:
         # load processed data, given by processor.py
+        print("Load Data:")
         labels, features, features_test, ids_test_list = \
             load_data_processed(file_path="./", outlier_factor=outlier_factor, poly_factor=poly,
                                 select_feature=select_feature)
@@ -123,11 +128,11 @@ if __name__ == '__main__':
             info_str += ", Dynamic Learning Rate On"
 
         print(info_str + ":")
-        # do training based on k-fold cross validation
+        # do training based on k-fold cross validation, need return_weights=True to do subsequent test set prediction
         k_weights = train_valid(shuffled_y, shuffled_tx, gammas=hyper_gamma, max_epoch_iters=max_epochs,
                                 init_w=initial_w.copy(), k_cross=cross_valid, model="reg_logistic_dynamic",
                                 batches=hyper_batch, dynamic_lr=dynamic, lambdas=hyper_lambda, poly_factor=poly,
-                                half_lr_count=half_lr, early_stop_count=early_stop)
+                                half_lr_count=half_lr, early_stop_count=early_stop, return_weights=True)
 
         # use the k models from cross validation to jointly do the prediction on test set (via vote scheme)
         predict_test(features_test, ids_test_list, k_weights, poly_factor=poly, k_cross=cross_valid,
