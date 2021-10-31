@@ -158,13 +158,16 @@ def reg_logistic_dynamic(y, tx, y_valid, tx_valid, initial_w=None, max_epoch_ite
             loss = np.mean(np.log(1 + np.exp(z)) - mini_y * z)
             gradient = np.dot(mini_tx.T, (np.exp(z) / (1 + np.exp(z)) - mini_y)) + lambda_ * w
             w = w - (lr * gradient)
-        print("Training Epoch: " + str(epoch) + ", Training Loss (MSE): " + str(loss))
         # learning rate control
         if dynamic_lr:
             _, valid_loss = predict_binary(y_valid, tx_valid, w, loss_type="logistic")
+            print("Training Epoch: " + str(epoch) + ", Training Loss: " + str(loss) + ", Validation Loss: "
+                  + str(valid_loss) + ", Learning Rate:" + str(lr))
+            loss_drop = min_valid_loss - valid_loss
             if valid_loss < min_valid_loss:
                 min_valid_loss = valid_loss
                 w_best = w.copy()
+            if loss_drop > 1e-5:
                 half_count = half_lr_count
                 stop_count = early_stop_count
             else:
@@ -175,6 +178,8 @@ def reg_logistic_dynamic(y, tx, y_valid, tx_valid, initial_w=None, max_epoch_ite
                 half_count = half_lr_count
             if stop_count == 0:
                 break
+        else:
+            print("Training Epoch: " + str(epoch) + ", Training Loss: " + str(loss))
 
     if dynamic_lr:
         return w_best, loss

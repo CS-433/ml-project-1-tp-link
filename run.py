@@ -23,6 +23,7 @@ def cross_validation(y, tx, lambda_=None, gamma=None, init_w=None, max_epoch_ite
         y_train = np.r_[y[:start_index], y[end_index:]]
         tx_train = np.r_[tx[:start_index], tx[end_index:]]
         if model == "reg_logistic_dynamic":
+            print("Cross Validation Fold: " + str(k))
             weights[k], loss = reg_logistic_dynamic(y_train, tx_train, y_valid, tx_valid, initial_w=weights[k],
                                                     max_epoch_iters=max_epoch_iters, gamma=gamma, batch_size=batch_size,
                                                     lambda_=lambda_, dynamic_lr=dynamic_lr, k_cross=k_cross,
@@ -103,12 +104,12 @@ if __name__ == '__main__':
         random_seed = 13
         cross_valid = 10  # 10-fold cross validation
         hyper_lambda = [1e-5]  # search from [1e-6, 1e-5, 1e-4, 1e-3, 0.01]
-        hyper_gamma = [2e-3]  # search from [5e-4, 1e-3, 2e-3, 5e-3, 0.01]
+        hyper_gamma = [0.02]  # search from [2e-3, 5e-3, 0.01, 0.02, 0.05, 0.1]
         hyper_batch = [1]  # still use SGD with batch_size=1, could be changed to mini-batch to improve efficiency
         dynamic = True  # whether use dynamic learning rate or not
         half_lr = 2  # halve learning rate if validation loss does not decrease for 2 consecutive epochs
         early_stop = 4  # stop training if validation loss does not decrease for 4 consecutive epochs
-        max_epochs = 1000  # maximum training epochs
+        max_epochs = 100  # maximum training epochs
 
         np.random.seed(random_seed)
 
